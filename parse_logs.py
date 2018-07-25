@@ -18,7 +18,7 @@ try:
     except NameError:
         from tqdm import tqdm
     from functools import partial
-    pbar = partial(tqdm, leave=False, disable=DISABLE_TQDM)  # noqa
+    pbar = partial(tqdm, leave=False)
 except ImportError:
     def pbar(obj, **tqdm_kw):
         """Empty progress bar."""
