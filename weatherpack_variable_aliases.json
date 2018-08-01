@@ -1,0 +1,31 @@
+{
+ "t": [
+  "Air T (C)",
+  "Air temperature",
+  "AT_avg_C"
+ ],
+ "p": [
+  "Barometric pressure (mbar)",
+  "Barometric pressure",
+  "BP_avg_mb"
+ ],
+ "rh": [
+  "RH (%)",
+  "RH",
+  "RH_avg"
+ ],
+ "ws": [
+  "True wind sp (m/s)",
+  "Wind speed",
+  "Spd_avg_m/s"
+ ],
+ "wd": [
+  "True W Dir (Referred to N)",
+  "Wind direction",
+  "Dir_avg"
+ ],
+ "sr": [
+  "Solar (W/m^2)",
+  "Solar"
+ ]
+}
