@@ -28,6 +28,15 @@ except ImportError:
 
 # TODO: docstrings!!!
 
+# Typical message list
+MSG_LIST = [
+    dict(talker='GGA', fields=(('datetime_str',), ('longitude',), ('latitude',))),
+    dict(talker='HDT', fields=(('datetime_str',), ('heading', float))),
+    dict(talker='MWV', fields=(('datetime_str',), ('status', str), ('reference', str),
+                               ('wind_speed', float), ('wind_angle', float))),
+    dict(talker='VHW', fields=(('datetime_str',), ('water_speed_knots', float), )),
+]
+
 
 class AllianceComposite:
     """
@@ -93,7 +102,10 @@ class AllianceComposite:
                                 if len(fld) == 2:
                                     # if the tuple contains two elements, assume the second one
                                     # is a function to convert the field value
-                                    value = fld[1](value)
+                                    try:
+                                        value = fld[1](value)
+                                    except ValueError:
+                                        value = np.nan
                                 self.data_d[msg_req['talker']][fld[0]].append(value)
 
                 except pynmea2.ParseError:
@@ -173,7 +185,7 @@ class AllianceComposite:
         self.read(msg_req_list)
         self.clean_up(**kwargs)
 
-    def average_over_time(self, freq, mark='end'):
+    def time_ave(self, freq):
         """
         Average the dataset over constant periods of time
 
@@ -181,40 +193,13 @@ class AllianceComposite:
         ---------
         freq: string or pandas.DateOffset
             Size of time chunks. E.g. 10T is 10 minutes
-        mark: string, optional
-            Time index mark. Can be one "start" or "end", e.g. the start 
-            or the end of time chunks.
 
         Returns
         -------
         ave_ds: xarray.Dataset
             Dataset of averaged data
         """
-        # create time index with the given frequency
-        new_time = pd.date_range(start=self.date,
-                                 end=self.date+timedelta(hours=23, minutes=59, seconds=59),
-                                 freq=freq)
-        if mark == 'end':
-            tstep = new_time[1] - new_time[0]
-            new_time += tstep
-        # TODO: add "middle" option
-
-        # save attributes before averaging
-        _attrs = {k: self.ds[k].attrs for k in self.ds.data_vars}
-
-        # average over time chunks
-        ave_ds = (self.ds.groupby(xr.IndexVariable(dims='time',
-                                                   data=np.arange(len(self.ds.time)) // tstep.total_seconds()))
-                  .mean())
-
-        # reset time index
-        ave_ds['time'] = new_time
-
-        # after groupby operation, the attributes are lost, so the saved are used
-        for k in self.ds.data_vars:
-            ave_ds[k].attrs.update(_attrs[k])
-
-        return ave_ds
+        return self.ds.resample(time=freq).reduce(np.nanmean)
 
     @classmethod
     def to_netcdf(cls, ds, path, encoding=None, **kwargs):
@@ -223,3 +208,59 @@ class AllianceComposite:
             encoding = dict(time=dict(units=f'seconds since {cls.TSTART}',
                                       calendar='gregorian'))
         ds.to_netcdf(path=path, encoding=encoding, **kwargs)
+
+
+def average_ds_over_time(ds, date, freq, mark='end', time_res='S'):
+    """
+    Average the dataset over constant periods of time
+
+    Arguments
+    ---------
+    ds: xarray.Dataset
+        Dataset to average
+    date: datetime.datetime
+        Start date
+    freq: string or pandas.DateOffset
+        Size of time chunks. E.g. 10T is 10 minutes
+    mark: string, optional
+        Time index mark. Can be one "start" or "end", e.g. the start 
+        or the end of time chunks.
+    time_res: string, optional
+        Can be seconds (S), minutes (M)
+
+    Returns
+    -------
+    ave_ds: xarray.Dataset
+        Dataset of averaged data
+    """
+    # create time index with the given frequency
+    new_time = pd.date_range(start=date,
+                             end=date+timedelta(hours=23, minutes=59, seconds=59),
+                             freq=freq)
+    if mark == 'end':
+        tstep = new_time[1] - new_time[0]
+        new_time += tstep
+    # TODO: add "middle" option
+
+    if time_res == 'S':
+        # TODO: rewrite this
+        ts = tstep.total_seconds()
+    elif time_res == 'M':
+        ts = tstep.total_seconds() / 60
+
+    # save attributes before averaging
+    _attrs = {k: ds[k].attrs for k in ds.data_vars}
+
+    # average over time chunks
+    ave_ds = (ds.groupby(xr.IndexVariable(dims='time',
+                                          data=np.arange(len(ds.time)) // ts))
+              .mean())
+
+    # reset time index
+    ave_ds['time'] = new_time
+
+    # after groupby operation, the attributes are lost, so the saved are used
+    for k in ds.data_vars:
+        ave_ds[k].attrs.update(_attrs[k])
+
+    return ave_ds

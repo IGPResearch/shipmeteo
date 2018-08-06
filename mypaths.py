@@ -10,8 +10,8 @@ curdir = Path('.').absolute().parent
 sample_dir = curdir/'data'
 
 # External data directories
-# igp_data_dir = Path('/media')/os.getenv('USER')/'Elements'/'IGP'/'data'
-igp_data_dir = Path('~/IGP/data').expanduser()
+igp_data_dir = Path('/media')/os.getenv('USER')/'Elements'/'IGP'/'data'
+# igp_data_dir = Path('~/IGP/data').expanduser()
 wpk_dir = igp_data_dir/'weatherpacks'
 nmea_dir = igp_data_dir/'nmea_logs'
 masin_dir = igp_data_dir/'masin'
