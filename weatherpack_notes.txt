@@ -1,0 +1,17 @@
+WeatherPack Log: met-team notes.
+
+2018-02-06: Depart Reykjavik
+2018-02-09: WP3 and WP4, WD incorrect by roughly 40-90deg, WS significantly overestimated by 10-15m/s; WD then became fixed at 359deg
+2018-02-10: Arrive to Akureyri. In fjord WS significantly overestimated showing 25m/s, despite displayed gust of 16m/s; WD incorrect by varying degree; In harbour WP3 and WP4 were checked and settings reviewed; After this wind readings seemed reasonable while stationary in harbour
+2018-02-11: Depart Akureyri. It became clear that the software was performing poor corrections when we were underway as readings were significantly inaccurate
+2018-02-13: Met team forced to start only using wind readings from ship navigation unit. Provided by propeller on mast that suffers from shading
+2018-02-15: Met team decided to stop using T, P and RH data from WP3 and WP4. Significant inconsistency between the two WPs and when compared to met team’s HATPRO measurements. Used HATPRO observations for T, P, RH for initialisation of radiosondes, despite a known small bias, as they appeared more consistent.
+2018-02-16: WP3 received a compass settings edit, but soon after the WD became fixed at 127deg again
+2018-02-19: Heavy rainfall event with some icing resulted in total failure of both WP3 and WP4; T fixed on -30degC despite temperatures around 0degC, RH fixed on 0, P incorrect
+WD and WS unrealistic. After 12 hours of temperatures above 0degC situation remained the same
+2018-02-21: WP3 switched off for good due to complete lack of useful data output; WP4 retained due to periodically useful values for P, RH
+2018-02-23: Arrive Isafjordur. In harbour WP3 removed and replaced with WP2 (an older model WP using a propeller and vane system for WD and WS that is known to be less accurate than modern sonic systems ought to be and less resilient to harsh conditions)
+2018-02-27: Depart Isafjordur. WP2 T and RH appear to be accurate, P fixed at 800 mbar. WP2 WS and WD incorrect by seemingly systematic bias
+2018-02-28: WP2 reset with new parameters. WS and WD now appear to be reasonably accurate. Met team begin using T and RH from WP2 for radiosonde initialisation, P from WP4. Met team continue using WS and WD from ship navigation unit.
+2018-03-12: No change in observation system. Met team have continued to use WP2 for T and RH, WP4 for P, and ship navigation unit for WS and WD.
+End of cruise: no change in system since previous comment
