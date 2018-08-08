@@ -104,7 +104,7 @@ class AllianceComposite:
                                     # is a function to convert the field value
                                     try:
                                         value = fld[1](value)
-                                    except ValueError:
+                                    except (ValueError, TypeError):
                                         value = np.nan
                                 self.data_d[msg_req['talker']][fld[0]].append(value)
 
